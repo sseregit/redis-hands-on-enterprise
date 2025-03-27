@@ -1,8 +1,10 @@
 package io.github.sseregit.redishandsonenterprise.common.redis;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -86,5 +88,53 @@ public class RedisCommon {
 		}
 
 		return result;
+	}
+
+	public <T> void addToListLeft(String key, T value) {
+		String jsonValue = gson.toJson(value);
+		template.opsForList().leftPush(key, jsonValue);
+	}
+
+	public <T> void addToListRight(String key, T value) {
+		String jsonValue = gson.toJson(value);
+		template.opsForList().rightPush(key, jsonValue);
+	}
+
+	public <T> List<T> getAllList(String key, Class<T> clazz) {
+		List<String> jsonValues = template.opsForList().range(key, 0, -1);
+
+		List<T> result = new ArrayList<>();
+		if (jsonValues != null) {
+			for (String jsonValue : jsonValues) {
+				T v = gson.fromJson(jsonValue, clazz);
+				result.add(v);
+			}
+		}
+
+		return result;
+	}
+
+	public <T> void removeFromList(String key, T value) {
+		String jsonValue = gson.toJson(value);
+		template.opsForList().remove(key, 1, jsonValue);
+	}
+
+	public <T> void putInHash(String key, String field, T value) {
+		String jsonValue = gson.toJson(value);
+		template.opsForHash().put(key, field, jsonValue);
+	}
+
+	public <T> T getFromHash(String key, String field, Class<T> clazz) {
+		Object result = template.opsForHash().get(key, field);
+
+		if (result != null) {
+			return clazz.cast(result);
+		}
+
+		return null;
+	}
+
+	public void removeFromhash(String key, String field) {
+		template.opsForHash().delete(key, field);
 	}
 }
