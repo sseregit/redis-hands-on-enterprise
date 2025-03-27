@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.sseregit.redishandsonenterprise.domain.string.model.request.MultiStringRequest;
 import io.github.sseregit.redishandsonenterprise.domain.string.model.request.StringRequest;
 import io.github.sseregit.redishandsonenterprise.domain.string.model.response.StringResponse;
+import io.github.sseregit.redishandsonenterprise.domain.string.service.RedisString;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -15,18 +16,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/set")
 @RequiredArgsConstructor
 class StringControllerImpl implements StringController {
+
+	private final RedisString redis;
+
 	@Override
 	public void setString(@RequestBody @Valid StringRequest req) {
-
+		redis.set(req);
 	}
 
 	@Override
 	public StringResponse getString(@RequestParam @Valid String key) {
-		return null;
+		return redis.get(key);
 	}
 
 	@Override
 	public void multiString(@RequestBody @Valid MultiStringRequest req) {
-
+		redis.multiSet(req);
 	}
 }
