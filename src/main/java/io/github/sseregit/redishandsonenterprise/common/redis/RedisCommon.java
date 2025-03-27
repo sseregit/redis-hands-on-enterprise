@@ -25,7 +25,7 @@ public class RedisCommon {
 	private final RedisTemplate<String, String> template;
 	private final Gson gson;
 
-	@Value("${spring.redis.default-time}")
+	@Value("${spring.data.redis.default-time}")
 	private Duration defaultExpireTime;
 
 	public <T> T getData(String key, Class<T> clazz) {

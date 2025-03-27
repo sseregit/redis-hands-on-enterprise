@@ -1,0 +1,28 @@
+### set-string-collection
+POST {{scheme}}{{host}}:{{port}}/api/v1/set/set-string-collection
+Content-Type: application/json
+
+{
+  "baseRequest": {
+    "key": "test_one"
+  },
+  "name": "next"
+}
+
+### get-string-collection
+GET {{scheme}}{{host}}:{{port}}/api/v1/set/get-string-collection?key=test_one
+Accept: application/json
+
+### multi-set-collection
+POST {{scheme}}{{host}}:{{port}}/api/v1/set/multi-set-collection
+Content-Type: application/json
+
+{
+  "baseRequest": {
+    "key": "test_one"
+  },
+  "names": [
+    "Hong",
+    "Hond Test"
+  ]
+}
