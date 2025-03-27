@@ -2,7 +2,9 @@ package io.github.sseregit.redishandsonenterprise.common.redis;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -48,5 +50,41 @@ public class RedisCommon {
 		}
 
 		template.opsForValue().multiSet(jsonMap);
+	}
+
+	public <T> void addToSortedSet(String key, T value, Float score) {
+		String jsonValue = gson.toJson(value);
+		template.opsForZSet().add(key, jsonValue, score);
+	}
+
+	public <T> Set<T> rangeByScore(String key, Float minScore, Float maxScore, Class<T> clazz) {
+		Set<String> jsonValues = template.opsForZSet().rangeByScore(key, minScore, maxScore);
+
+		Set<T> result = new HashSet<>();
+		if (jsonValues != null) {
+			for (String jsonValue : jsonValues) {
+				T v = gson.fromJson(jsonValue, clazz);
+				result.add(v);
+			}
+		}
+
+		return result;
+	}
+
+	public <T> Set<T> getTopNFromSortedSet(String key, int n, Class<T> clazz) {
+
+		// template.opsForZSet().range(key, 0, -1); 모든값 가져오기
+
+		Set<String> jsonValues = template.opsForZSet().reverseRange(key, 0, n - 1);
+
+		Set<T> result = new HashSet<>();
+		if (jsonValues != null) {
+			for (String jsonValue : jsonValues) {
+				T v = gson.fromJson(jsonValue, clazz);
+				result.add(v);
+			}
+		}
+
+		return result;
 	}
 }
