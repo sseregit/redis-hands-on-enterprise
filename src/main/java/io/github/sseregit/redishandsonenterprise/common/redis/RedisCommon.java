@@ -8,11 +8,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import io.github.sseregit.redishandsonenterprise.domain.strategy.model.ValueWithTTL;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -135,5 +138,47 @@ public class RedisCommon {
 
 	public void removeFromhash(String key, String field) {
 		template.opsForHash().delete(key, field);
+	}
+
+	public void setBit(String key, long offset, boolean value) {
+		template.opsForValue().setBit(key, offset, value);
+	}
+
+	public boolean getBit(String key, long offset) {
+		return template.opsForValue().getBit(key, offset);
+	}
+
+	public <T> ValueWithTTL<T> getValueWithTTL(String key, Class<T> clazz) {
+		T value = null;
+		Long ttl = null;
+		try {
+			List<Object> results = template.executePipelined((RedisCallback<Object>)connection -> {
+				StringRedisConnection conn = (StringRedisConnection)connection;
+
+				conn.get(key);
+				conn.pTtl(key);
+
+				return null;
+			});
+
+			value = gson.fromJson((String)results.get(0), clazz);
+			ttl = Long.valueOf((String)results.get(1));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return new ValueWithTTL<>(value, ttl);
+	}
+
+	public Long SumTwoKeyAndRnew(String script, String key1, String key2, String resultKey) {
+		return template.execute((RedisCallback<Long>)connection -> {
+			byte[] scriptBytes = script.getBytes();
+			byte[] key1Bytes = key1.getBytes();
+			byte[] key2Bytes = key2.getBytes();
+			byte[] resultKeyBytes = resultKey.getBytes();
+
+			return (Long)connection.execute("EVAL", scriptBytes, key1Bytes, key2Bytes, resultKeyBytes);
+		});
 	}
 }
