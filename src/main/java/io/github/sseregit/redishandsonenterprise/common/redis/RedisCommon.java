@@ -8,9 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -152,7 +156,19 @@ public class RedisCommon {
 		T value = null;
 		Long ttl = null;
 		try {
-			List<Object> results = template.executePipelined((RedisCallback<Object>)connection -> {
+
+			template.executePipelined(new RedisCallback<Object>() {
+				@Override
+				public Object doInRedis(RedisConnection connection) throws DataAccessException {
+					StringRedisConnection conn = (StringRedisConnection)connection;
+
+					conn.get(key);
+					conn.ttl(key);
+					return null;
+				}
+			});
+
+			/*List<Object> results = template.executePipelined((RedisCallback<Object>)connection -> {
 				StringRedisConnection conn = (StringRedisConnection)connection;
 
 				conn.get(key);
@@ -162,7 +178,7 @@ public class RedisCommon {
 			});
 
 			value = gson.fromJson((String)results.get(0), clazz);
-			ttl = Long.valueOf((String)results.get(1));
+			ttl = Long.valueOf((String)results.get(1));*/
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -171,14 +187,24 @@ public class RedisCommon {
 		return new ValueWithTTL<>(value, ttl);
 	}
 
-	public Long SumTwoKeyAndRnew(String script, String key1, String key2, String resultKey) {
-		return template.execute((RedisCallback<Long>)connection -> {
+	public Long SumTwoKeyAndRnew(String key1, String key2, String resultKey) {
+
+		DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+		redisScript.setLocation(new ClassPathResource("/lua/newKey.lua"));
+		redisScript.setResultType(Long.class);
+
+		List<String> keys = List.of(key1, key2, resultKey);
+
+		return template.execute(redisScript, keys);
+
+
+		/*return template.execute((RedisCallback<Long>)connection -> {
 			byte[] scriptBytes = script.getBytes();
 			byte[] key1Bytes = key1.getBytes();
 			byte[] key2Bytes = key2.getBytes();
 			byte[] resultKeyBytes = resultKey.getBytes();
 
 			return (Long)connection.execute("EVAL", scriptBytes, key1Bytes, key2Bytes, resultKeyBytes);
-		});
+		});*/
 	}
 }
