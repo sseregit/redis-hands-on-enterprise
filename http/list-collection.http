@@ -1,0 +1,25 @@
+### list-add-left
+POST {{scheme}}{{host}}:{{port}}/api/v1/list/list-add-left
+Content-Type: application/json
+
+{
+  "baseRequest": {
+    "key": "list key"
+  },
+  "name": "left right"
+}
+
+### list-add-right
+POST {{scheme}}{{host}}:{{port}}/api/v1/list/list-add-right
+Content-Type: application/json
+
+{
+  "baseRequest": {
+    "key": "list key"
+  },
+  "name": "right left"
+}
+
+### all
+GET {{scheme}}{{host}}:{{port}}/api/v1/list/all?
+    key=list key
