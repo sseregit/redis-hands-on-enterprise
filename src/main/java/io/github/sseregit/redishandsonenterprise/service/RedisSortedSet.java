@@ -1,6 +1,6 @@
 package io.github.sseregit.redishandsonenterprise.service;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -19,11 +19,11 @@ public class RedisSortedSet {
 		redis.addToSortedSet(req.baseRequest().key(), model, req.score());
 	}
 
-	public Set<SortedSet> getSetDataByRange(String key, Float min, Float max) {
+	public List<SortedSet> getSetDataByRange(String key, Float min, Float max) {
 		return redis.rangeByScore(key, min, max, SortedSet.class);
 	}
 
-	public Set<SortedSet> getTopN(String key, Integer n) {
+	public List<SortedSet> getTopN(String key, Integer n) {
 		return redis.getTopNFromSortedSet(key, 0, SortedSet.class);
 	}
 }

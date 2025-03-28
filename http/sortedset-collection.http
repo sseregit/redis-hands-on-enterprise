@@ -1,0 +1,68 @@
+### sorted-set-collection loop
+< {%
+    request.variables.set("clients", [ // test data
+        {
+            "baseRequest": {
+                "key": "sorted set"
+            },
+            "name": 'one',
+            "score": 1
+        },
+        {
+            "baseRequest": {
+                "key": "sorted set"
+            },
+            "name": 'two',
+            "score": 3
+        },
+        {
+            "baseRequest": {
+                "key": "sorted set"
+            },
+            "name": 'three',
+            "score": 12
+        },
+        {
+            "baseRequest": {
+                "key": "sorted set"
+            },
+            "name": 'four',
+            "score": 20
+        },
+    ])
+%}
+
+POST {{scheme}}{{host}}:{{port}}/api/v1/sorted-set/sorted-set-collection
+Content-Type: application/json
+
+{
+    "baseRequest": {
+      "key": "{{$.clients..baseRequest.key}}"
+    },
+    "name": "{{$.clients..name}}",
+    "score": {{$.clients..score}}
+    }
+
+### sorted-set-collection
+
+POST {{scheme}}{{host}}:{{port}}/api/v1/sorted-set/sorted-set-collection
+Content-Type: application/json
+
+{
+  "baseRequest": {
+    "key": "sorted set"
+  },
+  "name": "six",
+  "score": 100
+}
+
+### get-sorted-set-by-range
+GET {{scheme}}{{host}}:{{port}}/api/v1/sorted-set/get-sorted-set-by-range?
+    key=sorted set&
+    min=0&
+    max=10
+
+### get-sorted-set-by-top
+GET {{scheme}}{{host}}:{{port}}/api/v1/sorted-set/get-sorted-set-by-top?
+    key=sorted set&
+    n=5

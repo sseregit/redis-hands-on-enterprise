@@ -1,6 +1,6 @@
 package io.github.sseregit.redishandsonenterprise.domain.sortedset.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/set")
+@RequestMapping("/api/v1/sorted-set")
 @RequiredArgsConstructor
 class SortedSetControllerImpl implements SortedSetController {
 
@@ -30,14 +30,14 @@ class SortedSetControllerImpl implements SortedSetController {
 
 	@Override
 	@GetMapping("/get-sorted-set-by-range")
-	public Set<SortedSet> getSortedSet(@RequestParam @Valid String key, @RequestParam @Valid Float min,
+	public List<SortedSet> getSortedSet(@RequestParam @Valid String key, @RequestParam @Valid Float min,
 		@RequestParam @Valid Float max) {
 		return redis.getSetDataByRange(key, min, max);
 	}
 
 	@Override
 	@GetMapping("/get-sorted-set-by-top")
-	public Set<SortedSet> getTopN(@RequestParam @Valid String key, @RequestParam @Valid Integer n) {
+	public List<SortedSet> getTopN(@RequestParam @Valid String key, @RequestParam @Valid Integer n) {
 		return redis.getTopN(key, n);
 	}
 }

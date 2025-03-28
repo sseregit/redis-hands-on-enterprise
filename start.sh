@@ -6,7 +6,7 @@ if [ -z "$REDIS_INSTALLED" ]; then
   exit 1
 fi
 
-echo "Checking if Redis is install..."
+echo "Checking if Redis is running..."
 
 REDIS_STATUS=$(brew services info redis | grep 'Running' | awk '{ print $2 }')
 

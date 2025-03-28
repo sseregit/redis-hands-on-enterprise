@@ -3,7 +3,6 @@ package io.github.sseregit.redishandsonenterprise.common.redis;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,10 +58,10 @@ public class RedisCommon {
 		template.opsForZSet().add(key, jsonValue, score);
 	}
 
-	public <T> Set<T> rangeByScore(String key, Float minScore, Float maxScore, Class<T> clazz) {
+	public <T> List<T> rangeByScore(String key, Float minScore, Float maxScore, Class<T> clazz) {
 		Set<String> jsonValues = template.opsForZSet().rangeByScore(key, minScore, maxScore);
 
-		Set<T> result = new HashSet<>();
+		List<T> result = new ArrayList<>();
 		if (jsonValues != null) {
 			for (String jsonValue : jsonValues) {
 				T v = gson.fromJson(jsonValue, clazz);
@@ -73,13 +72,13 @@ public class RedisCommon {
 		return result;
 	}
 
-	public <T> Set<T> getTopNFromSortedSet(String key, int n, Class<T> clazz) {
+	public <T> List<T> getTopNFromSortedSet(String key, int n, Class<T> clazz) {
 
 		// template.opsForZSet().range(key, 0, -1); 모든값 가져오기
 
 		Set<String> jsonValues = template.opsForZSet().reverseRange(key, 0, n - 1);
 
-		Set<T> result = new HashSet<>();
+		List<T> result = new ArrayList<>();
 		if (jsonValues != null) {
 			for (String jsonValue : jsonValues) {
 				T v = gson.fromJson(jsonValue, clazz);

@@ -1,6 +1,6 @@
 package io.github.sseregit.redishandsonenterprise.domain.sortedset.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import io.github.sseregit.redishandsonenterprise.domain.sortedset.model.SortedSet;
 import io.github.sseregit.redishandsonenterprise.domain.sortedset.model.request.SortedSetRequest;
@@ -11,7 +11,7 @@ interface SortedSetController {
 
 	void setSortedSet(SortedSetRequest req);
 
-	Set<SortedSet> getSortedSet(String key, Float min, Float max);
+	List<SortedSet> getSortedSet(String key, Float min, Float max);
 
-	Set<SortedSet> getTopN(String key, Integer n);
+	List<SortedSet> getTopN(String key, Integer n);
 }
