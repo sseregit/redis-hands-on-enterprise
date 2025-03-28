@@ -126,8 +126,8 @@ public class RedisCommon {
 	public <T> T getFromHash(String key, String field, Class<T> clazz) {
 		Object result = template.opsForHash().get(key, field);
 
-		if (result != null) {
-			return clazz.cast(result);
+		if (result instanceof String json) {
+			return gson.fromJson(json, clazz);
 		}
 
 		return null;
