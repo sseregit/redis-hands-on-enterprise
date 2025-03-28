@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.sseregit.redishandsonenterprise.domain.string.model.request.MultiStringRequest;
 import io.github.sseregit.redishandsonenterprise.domain.string.model.request.StringRequest;
 import io.github.sseregit.redishandsonenterprise.domain.string.model.response.StringResponse;
-import io.github.sseregit.redishandsonenterprise.domain.string.service.RedisString;
+import io.github.sseregit.redishandsonenterprise.service.RedisString;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 

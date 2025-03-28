@@ -1,13 +1,11 @@
 package io.github.sseregit.redishandsonenterprise.domain.string.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StringModel {
-	String Key;
-	String Name;
+	private final String key;
+	private final String name;
 }

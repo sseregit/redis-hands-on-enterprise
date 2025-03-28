@@ -1,4 +1,4 @@
-package io.github.sseregit.redishandsonenterprise.domain.string.service;
+package io.github.sseregit.redishandsonenterprise.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +41,8 @@ public class RedisString {
 	public void multiSet(MultiStringRequest req) {
 		Map<String, Object> dataMap = new HashMap<>();
 
-		for (int i = 0; i < req.Names().length; i++) {
-			String name = req.Names()[i];
+		for (int i = 0; i < req.names().length; i++) {
+			String name = req.names()[i];
 			String key = "key:" + (i + 1);
 
 			StringModel newModel = new StringModel(key, name);
